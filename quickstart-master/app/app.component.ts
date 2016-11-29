@@ -1,41 +1,67 @@
 import { Component } from '@angular/core';
 import {Http, Response, Headers, RequestOptions, URLSearchParams} from '@angular/http';
 import 'rxjs/Rx';
+import {Question} from './quiz/question';
+import {Answer} from './quiz/answer';
+
 @Component({
     selector: 'my-app',
-    template: `<h1>Hello Angular Tuynh</h1>
-            <button (click)="onGetUser()">Get User</button>
-        <div id="response">Response: {{response}}</div>
-    `
+    templateUrl: 'app/app.html'
 })
 export class AppComponent {
 
-    response: string;
-    // onGetUser(){
-    //     this.response='tuynh';
-    // }
-    
-    lastName : string;
-    firstName : string;
+    response: string;    
+    questions: Question[]=[];
+    public getquized=false; 
+
+    //public userAnswer: string;
+    public correctCount=0;
+    public submitted=false; 
 
     constructor(public http: Http ){
 
     }
-    onGetUser(){
+    getQuiz(){
 
-        this.http.get('https://tracnghiem-sample.firebaseio.com/user.json').
+        this.http.get('https://tracnghiem-sample.firebaseio.com/dethi.json').
         subscribe(response => {
             var data: any = response.json();
 
             console.log(response);
-
-            this.firstName = data.firstname;
-            this.lastName = data.lastname;
-
-            console.log('firstName  :   '  + this.firstName);
-            console.log('lastName   :   ' + this.lastName);
-
+            for(var i=0; i<data.questions.length; i++) {
+                var answer: Answer[]=[];
+                
+                 for(var j=0; j<data.questions[i].answer.length; j++){
+                    answer[j] = new Answer(data.questions[i].answer[j]) ;
+                 }
+                this.questions[i] = new Question(data.questions[i].name, answer, data.questions[i].key);
+            }
+            // this.name = data.questions[0].name;
+            // this.answer[0] =new Answer(data.questions[0].answer[1]);
+            // //this.answer = data.answer.D;
+            // this.key = data.key;
+            for(var i=0; i<data.questions.length; i++) {
+                console.log('name: ' + this.questions[i].name);
+                for(var j=0; j<data.questions[i].answer.length; j++){
+                    console.log('answer:' + this.questions[i].answer[j].name);
+                }
+                console.log('key: ' + this.questions[i].key);
+            }
         });
+        this.getquized=true;
+    }
+
+
+    
+    public showResult(){
+        var qLength=this.questions.length;
+        this.correctCount=0;
+             for (var i=0; i< qLength; i++) {
+                 if (this.questions[i].key == this.questions[i].userAnswer) {
+                    this.correctCount++;
+                 }
+             }
+        this.submitted=true;
     }
 
  }
