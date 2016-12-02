@@ -6,22 +6,21 @@ import {Answer} from './quiz/answer';
 
 @Component({
     selector: 'my-app',
-    templateUrl: 'app/app.html'
+    templateUrl: './app/app.html',
+    providers: [Question]
 })
 export class AppComponent {
 
     response: string;    
-    questions: Question[]=[];
-    public getquized=false; 
-
-    //public userAnswer: string;
+    public questions: Question[]=[];
+    public getquized=false;
     public correctCount=0;
     public submitted=false; 
 
     constructor(public http: Http ){
-
+        
     }
-    getQuiz(){
+    public getQuiz(){
 
         this.http.get('https://tracnghiem-sample.firebaseio.com/dethi.json').
         subscribe(response => {
@@ -36,10 +35,7 @@ export class AppComponent {
                  }
                 this.questions[i] = new Question(data.questions[i].name, answer, data.questions[i].key);
             }
-            // this.name = data.questions[0].name;
-            // this.answer[0] =new Answer(data.questions[0].answer[1]);
-            // //this.answer = data.answer.D;
-            // this.key = data.key;
+
             for(var i=0; i<data.questions.length; i++) {
                 console.log('name: ' + this.questions[i].name);
                 for(var j=0; j<data.questions[i].answer.length; j++){

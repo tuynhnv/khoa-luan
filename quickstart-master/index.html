@@ -6,6 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="styles.css">
 
+    <link rel="manifest" href="./pwapp/manifest.json">
+
     <!-- Polyfill(s) for older browsers -->
     <script src="node_modules/core-js/client/shim.min.js"></script>
 
@@ -17,6 +19,15 @@
     <script>
       System.import('app').catch(function(err){ console.error(err); });
     </script>
+    <script type="text/javascript">
+      if ('serviceWorker' in navigator) {
+      navigator
+        .serviceWorker
+        .register('./pwapp/service-worker.js')
+        .then(() => console.log('SW installed'))
+        .catch(err => console.log('Error:', err));
+      }
+      </script>
   </head>
 
   <body>
